@@ -1,0 +1,2403 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>TaskFlow - Task Management System</title>
+
+<style>
+
+/* =====================================================
+   COMMON
+===================================================== */
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    background:#f3f6fa;
+    color:#202938;
+}
+
+
+/* =====================================================
+   LOGIN / REGISTER / SIGNUP
+===================================================== */
+
+.auth-page{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#eef3f8;
+}
+
+.auth-box{
+    width:380px;
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 5px 20px #0002;
+}
+
+.auth-logo{
+    text-align:center;
+    font-size:25px;
+    font-weight:bold;
+    color:#1d2a3a;
+    margin-bottom:8px;
+}
+
+.auth-subtitle{
+    text-align:center;
+    color:#777;
+    font-size:12px;
+    margin-bottom:25px;
+}
+
+.auth-box h2{
+    font-size:20px;
+    margin-bottom:20px;
+    text-align:center;
+}
+
+.input-group{
+    margin-bottom:15px;
+}
+
+.input-group label{
+    display:block;
+    font-size:12px;
+    font-weight:bold;
+    margin-bottom:6px;
+}
+
+.input-group input{
+    width:100%;
+    padding:11px;
+    border:1px solid #d5d9df;
+    border-radius:5px;
+    outline:none;
+}
+
+.input-group input:focus{
+    border-color:#4d75dc;
+}
+
+.auth-button{
+    width:100%;
+    padding:11px;
+    background:#4d75dc;
+    color:white;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+    font-size:13px;
+    margin-top:5px;
+}
+
+.auth-button:hover{
+    background:#385fc5;
+}
+
+.auth-link{
+    text-align:center;
+    margin-top:18px;
+    font-size:12px;
+    color:#666;
+}
+
+.auth-link a{
+    color:#315fc8;
+    font-weight:bold;
+    cursor:pointer;
+    text-decoration:none;
+}
+
+.demo{
+    margin-top:15px;
+    padding:10px;
+    background:#f3f6fa;
+    border-radius:5px;
+    text-align:center;
+    font-size:10px;
+    color:#666;
+}
+
+
+/* =====================================================
+   APP
+===================================================== */
+
+#app{
+    display:none;
+}
+
+
+/* =====================================================
+   SIDEBAR
+===================================================== */
+
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    width:140px;
+    height:100vh;
+    background:#1d2a3a;
+    color:white;
+    padding-top:20px;
+}
+
+.logo{
+    text-align:center;
+    font-size:17px;
+    font-weight:bold;
+    margin-bottom:22px;
+}
+
+.menu a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:10px 8px;
+    margin:3px 8px;
+    border-radius:5px;
+    font-size:12px;
+    cursor:pointer;
+}
+
+.menu a:hover,
+.menu a.active{
+    background:#4d75dc;
+}
+
+
+/* =====================================================
+   MAIN
+===================================================== */
+
+.main{
+    margin-left:140px;
+    padding:24px 15px;
+    min-height:100vh;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.header{
+    background:white;
+    padding:14px 16px;
+    border-radius:8px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 2px 8px #0001;
+    margin-bottom:15px;
+}
+
+.header h1{
+    font-size:22px;
+}
+
+.welcome{
+    color:#315fd1;
+    font-size:11px;
+}
+
+
+/* =====================================================
+   PAGES
+===================================================== */
+
+.page{
+    display:none;
+}
+
+.page.active-page{
+    display:block;
+}
+
+
+/* =====================================================
+   DASHBOARD STATS
+===================================================== */
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+}
+
+.stat{
+    background:white;
+    padding:15px;
+    border-radius:8px;
+    box-shadow:0 2px 8px #0001;
+}
+
+.stat p{
+    font-size:10px;
+    color:#555;
+}
+
+.stat h2{
+    color:#416ee0;
+    margin-top:7px;
+    font-size:20px;
+}
+
+
+/* =====================================================
+   TOOLBAR
+===================================================== */
+
+.tools{
+    display:flex;
+    justify-content:space-between;
+    margin:15px 0;
+}
+
+.search{
+    width:190px;
+    padding:9px 10px;
+    border:1px solid #ddd;
+    border-radius:5px;
+}
+
+.btn{
+    border:none;
+    padding:9px 14px;
+    border-radius:5px;
+    color:white;
+    cursor:pointer;
+    font-size:12px;
+}
+
+.green{
+    background:#15bf88;
+}
+
+.blue{
+    background:#4d75dc;
+}
+
+.red{
+    background:#e55353;
+}
+
+.gray{
+    background:#667085;
+}
+
+
+/* =====================================================
+   DASHBOARD BOARD
+===================================================== */
+
+.board{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+}
+
+.column{
+    background:#e8edf4;
+    min-height:260px;
+    border-radius:8px;
+    padding:10px;
+}
+
+.column h3{
+    text-align:center;
+    font-size:13px;
+    margin-bottom:10px;
+}
+
+.task{
+    background:white;
+    padding:11px;
+    border-radius:6px;
+    box-shadow:0 2px 5px #0001;
+    margin-bottom:10px;
+}
+
+.task h4{
+    font-size:12px;
+    margin-bottom:6px;
+}
+
+.task p{
+    font-size:10px;
+    color:#666;
+    margin:6px 0;
+}
+
+.badge{
+    display:inline-block;
+    font-size:8px;
+    padding:3px 6px;
+    border-radius:3px;
+}
+
+.high{
+    background:#ffe0e0;
+    color:#d33;
+}
+
+.medium{
+    background:#fff0c9;
+    color:#9b6b00;
+}
+
+.low{
+    background:#d8f6e6;
+    color:#138a57;
+}
+
+
+/* =====================================================
+   CARD
+===================================================== */
+
+.card{
+    background:white;
+    padding:18px;
+    border-radius:8px;
+    box-shadow:0 2px 8px #0001;
+    margin-bottom:15px;
+}
+
+.card h2{
+    font-size:17px;
+    margin-bottom:15px;
+}
+
+
+/* =====================================================
+   TABLE
+===================================================== */
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,
+td{
+    padding:12px;
+    border-bottom:1px solid #eee;
+    text-align:left;
+    font-size:12px;
+}
+
+th{
+    background:#f5f6f8;
+}
+
+
+/* =====================================================
+   PROJECTS
+===================================================== */
+
+.projects{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+}
+
+.project{
+    background:white;
+    padding:20px;
+    border-radius:8px;
+    box-shadow:0 2px 8px #0001;
+}
+
+.project h3{
+    font-size:14px;
+    margin-bottom:10px;
+}
+
+.project p{
+    font-size:10px;
+    color:#666;
+    margin:6px 0;
+}
+
+.progress{
+    height:7px;
+    background:#ddd;
+    border-radius:5px;
+    margin-top:8px;
+}
+
+.progress div{
+    height:100%;
+    background:#4d75dc;
+    border-radius:5px;
+}
+
+
+/* =====================================================
+   CALENDAR
+===================================================== */
+
+.calendar{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:7px;
+}
+
+.day{
+    background:white;
+    min-height:90px;
+    padding:9px;
+    border-radius:6px;
+    box-shadow:0 1px 5px #0001;
+}
+
+.day strong{
+    font-size:11px;
+}
+
+.event{
+    background:#e4edff;
+    color:#315fc8;
+    padding:5px;
+    margin-top:8px;
+    border-radius:4px;
+    font-size:9px;
+}
+
+
+/* =====================================================
+   TEAM
+===================================================== */
+
+.team{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+}
+
+.member{
+    background:white;
+    padding:20px;
+    border-radius:8px;
+    box-shadow:0 2px 8px #0001;
+}
+
+.avatar{
+    width:42px;
+    height:42px;
+    background:#4d75dc;
+    color:white;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+    font-size:17px;
+}
+
+.member h3{
+    font-size:14px;
+    margin-top:10px;
+}
+
+.member p{
+    font-size:10px;
+    color:#666;
+    margin-top:6px;
+}
+
+
+/* =====================================================
+   NOTIFICATIONS
+===================================================== */
+
+.notification{
+    background:white;
+    padding:15px;
+    border-left:4px solid #4d75dc;
+    border-radius:6px;
+    margin-bottom:10px;
+    box-shadow:0 2px 6px #0001;
+}
+
+.notification b{
+    font-size:12px;
+}
+
+.notification p{
+    font-size:10px;
+    color:#666;
+    margin-top:5px;
+}
+
+
+/* =====================================================
+   ADD TASK FORM
+===================================================== */
+
+.form-group{
+    margin-bottom:12px;
+}
+
+.form-group label{
+    display:block;
+    font-size:11px;
+    font-weight:bold;
+    margin-bottom:5px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+    width:100%;
+    padding:9px;
+    border:1px solid #ddd;
+    border-radius:5px;
+}
+
+.form-group textarea{
+    height:80px;
+    resize:none;
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+.logout-box{
+    background:white;
+    max-width:450px;
+    margin:50px auto;
+    padding:35px;
+    text-align:center;
+    border-radius:10px;
+    box-shadow:0 3px 15px #0002;
+}
+
+.logout-box h2{
+    margin-bottom:10px;
+}
+
+.logout-box p{
+    color:#666;
+    font-size:13px;
+    margin-bottom:20px;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media(max-width:800px){
+
+    .sidebar{
+        width:120px;
+    }
+
+    .main{
+        margin-left:120px;
+    }
+
+    .stats,
+    .board,
+    .projects,
+    .team{
+        grid-template-columns:1fr;
+    }
+
+    .calendar{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     REGISTER PAGE
+===================================================== -->
+
+<div id="registerPage" class="auth-page">
+
+    <div class="auth-box">
+
+        <div class="auth-logo">
+            TaskFlow
+        </div>
+
+        <div class="auth-subtitle">
+            Task Management System
+        </div>
+
+        <h2>
+            Create Account
+        </h2>
+
+
+        <div class="input-group">
+
+            <label>
+                Full Name
+            </label>
+
+            <input
+                type="text"
+                id="registerName"
+                placeholder="Enter your full name">
+
+        </div>
+
+
+        <div class="input-group">
+
+            <label>
+                Email
+            </label>
+
+            <input
+                type="email"
+                id="registerEmail"
+                placeholder="Enter your email">
+
+        </div>
+
+
+        <div class="input-group">
+
+            <label>
+                Username
+            </label>
+
+            <input
+                type="text"
+                id="registerUsername"
+                placeholder="Create username">
+
+        </div>
+
+
+        <div class="input-group">
+
+            <label>
+                Password
+            </label>
+
+            <input
+                type="password"
+                id="registerPassword"
+                placeholder="Create password">
+
+        </div>
+
+
+        <button
+            class="auth-button"
+            onclick="registerUser()">
+
+            Register
+
+        </button>
+
+
+        <div class="auth-link">
+
+            Already have an account?
+
+            <a onclick="showLogin()">
+                Login
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     SIGNUP PAGE
+===================================================== -->
+
+<div id="signupPage" class="auth-page" style="display:none;">
+
+    <div class="auth-box">
+
+        <div class="auth-logo">
+            TaskFlow
+        </div>
+
+        <div class="auth-subtitle">
+            Create your TaskFlow account
+        </div>
+
+        <h2>
+            Sign Up
+        </h2>
+
+
+        <div class="input-group">
+
+            <label>
+                Name
+            </label>
+
+            <input
+                type="text"
+                id="signupName"
+                placeholder="Enter name">
+
+        </div>
+
+
+        <div class="input-group">
+
+            <label>
+                Email
+            </label>
+
+            <input
+                type="email"
+                id="signupEmail"
+                placeholder="Enter email">
+
+        </div>
+
+
+        <div class="input-group">
+
+            <label>
+                Password
+            </label>
+
+            <input
+                type="password"
+                id="signupPassword"
+                placeholder="Enter password">
+
+        </div>
+
+
+        <button
+            class="auth-button"
+            onclick="signupUser()">
+
+            Sign Up
+
+        </button>
+
+
+        <div class="auth-link">
+
+            Already registered?
+
+            <a onclick="showLogin()">
+                Login
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     LOGIN PAGE
+===================================================== -->
+
+<div id="loginPage" class="auth-page" style="display:none;">
+
+    <div class="auth-box">
+
+        <div class="auth-logo">
+            TaskFlow
+        </div>
+
+        <div class="auth-subtitle">
+            Welcome back
+        </div>
+
+        <h2>
+            Login
+        </h2>
+
+
+        <div class="input-group">
+
+            <label>
+                Username / Email
+            </label>
+
+            <input
+                type="text"
+                id="loginUsername"
+                placeholder="Enter username or email">
+
+        </div>
+
+
+        <div class="input-group">
+
+            <label>
+                Password
+            </label>
+
+            <input
+                type="password"
+                id="loginPassword"
+                placeholder="Enter password">
+
+        </div>
+
+
+        <button
+            class="auth-button"
+            onclick="loginUser()">
+
+            Login
+
+        </button>
+
+
+        <div class="auth-link">
+
+            Don't have an account?
+
+            <a onclick="showSignup()">
+                Sign Up
+            </a>
+
+        </div>
+
+
+        <div class="demo">
+
+            Demo Login:<br>
+
+            Username: <b>deepak</b><br>
+
+            Password: <b>1234</b>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     MAIN TASKFLOW APPLICATION
+===================================================== -->
+
+<div id="app">
+
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+    <div class="logo">
+        TaskFlow
+    </div>
+
+    <div class="menu">
+
+        <a
+            class="active"
+            onclick="showPage('dashboard',this)">
+
+            🏠 Dashboard
+
+        </a>
+
+
+        <a
+            onclick="showPage('tasks',this)">
+
+            📋 My Tasks
+
+        </a>
+
+
+        <a
+            onclick="showPage('projects',this)">
+
+            📁 Projects
+
+        </a>
+
+
+        <a
+            onclick="showPage('calendar',this)">
+
+            🗓️ Calendar
+
+        </a>
+
+
+        <a
+            onclick="showPage('team',this)">
+
+            👥 Team
+
+        </a>
+
+
+        <a
+            onclick="showPage('notifications',this)">
+
+            🔔 Notifications
+
+        </a>
+
+
+        <a
+            onclick="showPage('logout',this)">
+
+            🚪 Logout
+
+        </a>
+
+    </div>
+
+</div>
+
+
+
+<div class="main">
+
+
+<!-- =====================================================
+     DASHBOARD
+===================================================== -->
+
+<section
+    id="dashboard"
+    class="page active-page">
+
+
+    <div class="header">
+
+        <h1>
+            Dashboard
+        </h1>
+
+        <div class="welcome">
+            Welcome, <span id="welcomeUser">
+            2500040124
+            </span>
+        </div>
+
+    </div>
+
+
+    <div class="stats">
+
+
+        <div class="stat">
+
+            <p>
+                Total Tasks
+            </p>
+
+            <h2 id="totalTasks">
+                3
+            </h2>
+
+        </div>
+
+
+        <div class="stat">
+
+            <p>
+                Pending Tasks
+            </p>
+
+            <h2 id="pendingTasks">
+                1
+            </h2>
+
+        </div>
+
+
+        <div class="stat">
+
+            <p>
+                In Progress
+            </p>
+
+            <h2 id="progressTasks">
+                1
+            </h2>
+
+        </div>
+
+
+        <div class="stat">
+
+            <p>
+                Completed
+            </p>
+
+            <h2 id="completedTasks">
+                1
+            </h2>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="tools">
+
+        <input
+            type="text"
+            class="search"
+            placeholder="🔍 Search tasks..."
+            onkeyup="searchTasks(this.value)">
+
+
+        <button
+            class="btn green"
+            onclick="showPage('tasks')">
+
+            + Add New Task
+
+        </button>
+
+    </div>
+
+
+    <div class="board">
+
+
+        <!-- TODO -->
+
+        <div class="column">
+
+            <h3>
+                📌 To Do
+            </h3>
+
+
+            <div class="task">
+
+                <h4>
+                    Complete Project Report
+                </h4>
+
+                <span class="badge high">
+                    HIGH
+                </span>
+
+                <p>
+                    Prepare final project documentation.
+                </p>
+
+                <p>
+                    📅 Deadline: 2026-10-10
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- IN PROGRESS -->
+
+        <div class="column">
+
+            <h3>
+                ⚙️ In Progress
+            </h3>
+
+
+            <div class="task">
+
+                <h4>
+                    Design Dashboard
+                </h4>
+
+                <span class="badge medium">
+                    MEDIUM
+                </span>
+
+                <p>
+                    Create UI for task dashboard.
+                </p>
+
+                <p>
+                    📅 Deadline: 2026-10-08
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- COMPLETED -->
+
+        <div class="column">
+
+            <h3>
+                ✅ Completed
+            </h3>
+
+
+            <div class="task">
+
+                <h4>
+                    Testing
+                </h4>
+
+                <span class="badge low">
+                    LOW
+                </span>
+
+                <p>
+                    Test all application features.
+                </p>
+
+                <p>
+                    📅 Deadline: 2026-10-12
+                </p>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     MY TASKS
+===================================================== -->
+
+<section
+    id="tasks"
+    class="page">
+
+
+    <div class="header">
+
+        <h1>
+            My Tasks
+        </h1>
+
+        <span>
+            2500040124
+        </span>
+
+    </div>
+
+
+    <!-- ADD TASK -->
+
+    <div class="card">
+
+        <h2>
+            ➕ Add New Task
+        </h2>
+
+
+        <div class="form-group">
+
+            <label>
+                Task Name
+            </label>
+
+            <input
+                type="text"
+                id="taskName"
+                placeholder="Enter task name">
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Priority
+            </label>
+
+            <select id="taskPriority">
+
+                <option>
+                    High
+                </option>
+
+                <option>
+                    Medium
+                </option>
+
+                <option>
+                    Low
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Deadline
+            </label>
+
+            <input
+                type="date"
+                id="taskDate">
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Description
+            </label>
+
+            <textarea
+                id="taskDescription"
+                placeholder="Enter task description">
+            </textarea>
+
+        </div>
+
+
+        <button
+            class="btn green"
+            onclick="addTask()">
+
+            Add Task
+
+        </button>
+
+    </div>
+
+
+    <!-- TASK TABLE -->
+
+    <div class="card">
+
+        <h2>
+            📋 Task List
+        </h2>
+
+
+        <table id="taskTable">
+
+            <tr>
+
+                <th>
+                    Task
+                </th>
+
+                <th>
+                    Priority
+                </th>
+
+                <th>
+                    Deadline
+                </th>
+
+                <th>
+                    Status
+                </th>
+
+                <th>
+                    Action
+                </th>
+
+            </tr>
+
+
+            <tr>
+
+                <td>
+                    Complete Project Report
+                </td>
+
+                <td>
+                    <span class="badge high">
+                        High
+                    </span>
+                </td>
+
+                <td>
+                    2026-10-10
+                </td>
+
+                <td>
+                    To Do
+                </td>
+
+                <td>
+
+                    <button
+                        class="btn blue"
+                        onclick="completeTask(this)">
+
+                        Complete
+
+                    </button>
+
+                </td>
+
+            </tr>
+
+
+            <tr>
+
+                <td>
+                    Design Dashboard
+                </td>
+
+                <td>
+                    <span class="badge medium">
+                        Medium
+                    </span>
+                </td>
+
+                <td>
+                    2026-10-08
+                </td>
+
+                <td>
+                    In Progress
+                </td>
+
+                <td>
+
+                    <button
+                        class="btn blue"
+                        onclick="completeTask(this)">
+
+                        Complete
+
+                    </button>
+
+                </td>
+
+            </tr>
+
+
+            <tr>
+
+                <td>
+                    Testing
+                </td>
+
+                <td>
+                    <span class="badge low">
+                        Low
+                    </span>
+
+                </td>
+
+                <td>
+                    2026-10-12
+                </td>
+
+                <td>
+                    Completed
+                </td>
+
+                <td>
+                    ✅ Done
+                </td>
+
+            </tr>
+
+
+        </table>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     PROJECTS
+===================================================== -->
+
+<section
+    id="projects"
+    class="page">
+
+
+    <div class="header">
+
+        <h1>
+            Projects
+        </h1>
+
+        <span>
+            My Projects
+        </span>
+
+    </div>
+
+
+    <div class="projects">
+
+
+        <div class="project">
+
+            <h3>
+                📁 TaskFlow Website
+            </h3>
+
+            <p>
+                Website development project
+            </p>
+
+            <p>
+                Progress: 70%
+            </p>
+
+            <div class="progress">
+
+                <div style="width:70%">
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="project">
+
+            <h3>
+                📁 College Project
+            </h3>
+
+            <p>
+                Final project documentation
+            </p>
+
+            <p>
+                Progress: 45%
+            </p>
+
+            <div class="progress">
+
+                <div style="width:45%">
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="project">
+
+            <h3>
+                📁 Mini Project
+            </h3>
+
+            <p>
+                Mini project development
+            </p>
+
+            <p>
+                Progress: 90%
+            </p>
+
+            <div class="progress">
+
+                <div style="width:90%">
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     CALENDAR
+===================================================== -->
+
+<section
+    id="calendar"
+    class="page">
+
+
+    <div class="header">
+
+        <h1>
+            Calendar
+        </h1>
+
+        <span>
+            October 2026
+        </span>
+
+    </div>
+
+
+    <div class="calendar">
+
+
+        <div class="day">
+            <strong>Sun</strong>
+        </div>
+
+        <div class="day">
+            <strong>Mon</strong>
+        </div>
+
+        <div class="day">
+            <strong>Tue</strong>
+        </div>
+
+        <div class="day">
+            <strong>Wed</strong>
+        </div>
+
+        <div class="day">
+            <strong>Thu</strong>
+        </div>
+
+        <div class="day">
+            <strong>Fri</strong>
+        </div>
+
+        <div class="day">
+            <strong>Sat</strong>
+        </div>
+
+
+        <div class="day">1</div>
+        <div class="day">2</div>
+        <div class="day">3</div>
+        <div class="day">4</div>
+        <div class="day">5</div>
+        <div class="day">6</div>
+        <div class="day">7</div>
+
+
+        <div class="day">
+
+            8
+
+            <div class="event">
+                Design Dashboard
+            </div>
+
+        </div>
+
+
+        <div class="day">
+            9
+        </div>
+
+
+        <div class="day">
+
+            10
+
+            <div class="event">
+                Project Report
+            </div>
+
+        </div>
+
+
+        <div class="day">
+            11
+        </div>
+
+
+        <div class="day">
+
+            12
+
+            <div class="event">
+                Testing
+            </div>
+
+        </div>
+
+
+        <div class="day">
+            13
+        </div>
+
+
+        <div class="day">
+            14
+        </div>
+
+
+        <div class="day">15</div>
+        <div class="day">16</div>
+        <div class="day">17</div>
+        <div class="day">18</div>
+        <div class="day">19</div>
+        <div class="day">20</div>
+        <div class="day">21</div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     TEAM
+===================================================== -->
+
+<section
+    id="team"
+    class="page">
+
+
+    <div class="header">
+
+        <h1>
+            Team
+        </h1>
+
+        <span>
+            Team Members
+        </span>
+
+    </div>
+
+
+    <div class="team">
+
+
+        <div class="member">
+
+            <div class="avatar">
+                D
+            </div>
+
+            <h3>
+                Deepak
+            </h3>
+
+            <p>
+                Project Manager
+            </p>
+
+            <p>
+                Online 🟢
+            </p>
+
+        </div>
+
+
+        <div class="member">
+
+            <div class="avatar">
+                H
+            </div>
+
+            <h3>
+                Hemanth
+            </h3>
+
+            <p>
+                Developer
+            </p>
+
+            <p>
+                Online 🟢
+            </p>
+
+        </div>
+
+
+        <div class="member">
+
+            <div class="avatar">
+                S
+            </div>
+
+            <h3>
+                Saketh
+            </h3>
+
+            <p>
+                Designer
+            </p>
+
+            <p>
+                Online 🟢
+            </p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     NOTIFICATIONS
+===================================================== -->
+
+<section
+    id="notifications"
+    class="page">
+
+
+    <div class="header">
+
+        <h1>
+            Notifications
+        </h1>
+
+        <span>
+            3 New
+        </span>
+
+    </div>
+
+
+    <div class="notification">
+
+        <b>
+            🔔 New Task Assigned
+        </b>
+
+        <p>
+            You have been assigned the task
+            "Complete Project Report".
+        </p>
+
+    </div>
+
+
+    <div class="notification">
+
+        <b>
+            ⏰ Deadline Reminder
+        </b>
+
+        <p>
+            Design Dashboard is due on
+            2026-10-08.
+        </p>
+
+    </div>
+
+
+    <div class="notification">
+
+        <b>
+            ✅ Task Completed
+        </b>
+
+        <p>
+            Testing task has been completed successfully.
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     LOGOUT
+===================================================== -->
+
+<section
+    id="logout"
+    class="page">
+
+
+    <div class="logout-box">
+
+        <h2>
+            🚪 Logout
+        </h2>
+
+        <p>
+            Are you sure you want to logout from TaskFlow?
+        </p>
+
+
+        <button
+            class="btn red"
+            onclick="logoutUser()">
+
+            Yes, Logout
+
+        </button>
+
+
+        <button
+            class="btn blue"
+            onclick="showPage('dashboard')">
+
+            Cancel
+
+        </button>
+
+    </div>
+
+</section>
+
+
+</div>
+
+</div>
+
+
+
+<script>
+
+/* =====================================================
+   REGISTER
+===================================================== */
+
+function registerUser(){
+
+    let name =
+        document.getElementById("registerName").value;
+
+    let email =
+        document.getElementById("registerEmail").value;
+
+    let username =
+        document.getElementById("registerUsername").value;
+
+    let password =
+        document.getElementById("registerPassword").value;
+
+
+    if(
+        name === "" ||
+        email === "" ||
+        username === "" ||
+        password === ""
+    ){
+
+        alert("Please fill all registration fields.");
+
+        return;
+
+    }
+
+
+    localStorage.setItem("taskflowName",name);
+    localStorage.setItem("taskflowEmail",email);
+    localStorage.setItem("taskflowUsername",username);
+    localStorage.setItem("taskflowPassword",password);
+
+
+    alert(
+        "Registration successful! Please login."
+    );
+
+
+    showLogin();
+
+}
+
+
+/* =====================================================
+   SIGNUP
+===================================================== */
+
+function signupUser(){
+
+    let name =
+        document.getElementById("signupName").value;
+
+    let email =
+        document.getElementById("signupEmail").value;
+
+    let password =
+        document.getElementById("signupPassword").value;
+
+
+    if(
+        name === "" ||
+        email === "" ||
+        password === ""
+    ){
+
+        alert("Please fill all signup fields.");
+
+        return;
+
+    }
+
+
+    localStorage.setItem("taskflowName",name);
+    localStorage.setItem("taskflowEmail",email);
+    localStorage.setItem("taskflowPassword",password);
+
+
+    alert(
+        "Sign Up successful! Please login."
+    );
+
+
+    showLogin();
+
+}
+
+
+/* =====================================================
+   SHOW REGISTER
+===================================================== */
+
+function showRegister(){
+
+    document.getElementById("registerPage").style.display="flex";
+
+    document.getElementById("signupPage").style.display="none";
+
+    document.getElementById("loginPage").style.display="none";
+
+    document.getElementById("app").style.display="none";
+
+}
+
+
+/* =====================================================
+   SHOW SIGNUP
+===================================================== */
+
+function showSignup(){
+
+    document.getElementById("registerPage").style.display="none";
+
+    document.getElementById("signupPage").style.display="flex";
+
+    document.getElementById("loginPage").style.display="none";
+
+    document.getElementById("app").style.display="none";
+
+}
+
+
+/* =====================================================
+   SHOW LOGIN
+===================================================== */
+
+function showLogin(){
+
+    document.getElementById("registerPage").style.display="none";
+
+    document.getElementById("signupPage").style.display="none";
+
+    document.getElementById("loginPage").style.display="flex";
+
+    document.getElementById("app").style.display="none";
+
+}
+
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+function loginUser(){
+
+    let username =
+        document.getElementById("loginUsername").value;
+
+    let password =
+        document.getElementById("loginPassword").value;
+
+
+    /* Demo login */
+
+    if(
+        username === "deepak" &&
+        password === "1234"
+    ){
+
+        openDashboard(username);
+
+        return;
+
+    }
+
+
+    /* Registered user */
+
+    let savedUsername =
+        localStorage.getItem("taskflowUsername");
+
+    let savedEmail =
+        localStorage.getItem("taskflowEmail");
+
+    let savedPassword =
+        localStorage.getItem("taskflowPassword");
+
+
+    if(
+        (username === savedUsername ||
+         username === savedEmail) &&
+        password === savedPassword
+    ){
+
+        openDashboard(
+            localStorage.getItem("taskflowName")
+        );
+
+    }
+
+    else{
+
+        alert(
+            "Invalid username/email or password."
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   OPEN DASHBOARD
+===================================================== */
+
+function openDashboard(username){
+
+    document.getElementById("registerPage").style.display="none";
+
+    document.getElementById("signupPage").style.display="none";
+
+    document.getElementById("loginPage").style.display="none";
+
+    document.getElementById("app").style.display="block";
+
+
+    document.getElementById("welcomeUser").innerText =
+        username;
+
+
+    showPage("dashboard");
+
+}
+
+
+/* =====================================================
+   CHANGE APPLICATION PAGE
+===================================================== */
+
+function showPage(pageId,clickedMenu){
+
+    let pages =
+        document.querySelectorAll(".page");
+
+
+    pages.forEach(function(page){
+
+        page.classList.remove("active-page");
+
+    });
+
+
+    document
+        .getElementById(pageId)
+        .classList.add("active-page");
+
+
+    let menus =
+        document.querySelectorAll(".menu a");
+
+
+    menus.forEach(function(menu){
+
+        menu.classList.remove("active");
+
+    });
+
+
+    if(clickedMenu){
+
+        clickedMenu.classList.add("active");
+
+    }
+    else{
+
+        menus.forEach(function(menu){
+
+            if(
+                menu.innerText
+                .toLowerCase()
+                .includes(pageId === "tasks"
+                    ? "my tasks"
+                    : pageId)
+            ){
+
+                menu.classList.add("active");
+
+            }
+
+        });
+
+    }
+
+}
+
+
+/* =====================================================
+   ADD TASK
+===================================================== */
+
+function addTask(){
+
+    let name =
+        document.getElementById("taskName").value;
+
+    let priority =
+        document.getElementById("taskPriority").value;
+
+    let date =
+        document.getElementById("taskDate").value;
+
+
+    if(
+        name === "" ||
+        date === ""
+    ){
+
+        alert(
+            "Please enter task name and deadline."
+        );
+
+        return;
+
+    }
+
+
+    let table =
+        document.getElementById("taskTable");
+
+
+    let row =
+        table.insertRow(-1);
+
+
+    let priorityClass =
+        priority === "High"
+        ? "high"
+        : priority === "Medium"
+        ? "medium"
+        : "low";
+
+
+    row.insertCell(0).innerHTML =
+        name;
+
+
+    row.insertCell(1).innerHTML =
+        '<span class="badge ' +
+        priorityClass +
+        '">' +
+        priority +
+        '</span>';
+
+
+    row.insertCell(2).innerHTML =
+        date;
+
+
+    row.insertCell(3).innerHTML =
+        "To Do";
+
+
+    row.insertCell(4).innerHTML =
+
+        '<button class="btn blue" ' +
+        'onclick="completeTask(this)">' +
+        'Complete' +
+        '</button>';
+
+
+    document.getElementById("taskName").value="";
+
+    document.getElementById("taskDate").value="";
+
+    document.getElementById("taskDescription").value="";
+
+
+    alert(
+        "Task added successfully!"
+    );
+
+
+    updateStatistics();
+
+}
+
+
+/* =====================================================
+   COMPLETE TASK
+===================================================== */
+
+function completeTask(button){
+
+    let row =
+        button.parentElement.parentElement;
+
+
+    row.cells[3].innerHTML =
+        "Completed";
+
+
+    row.cells[4].innerHTML =
+        "✅ Done";
+
+
+    alert(
+        "Task marked as completed!"
+    );
+
+
+    updateStatistics();
+
+}
+
+
+/* =====================================================
+   STATISTICS
+===================================================== */
+
+function updateStatistics(){
+
+    let rows =
+        document.querySelectorAll(
+            "#taskTable tr"
+        );
+
+
+    let total =
+        rows.length - 1;
+
+
+    document.getElementById(
+        "totalTasks"
+    ).innerText = total;
+
+}
+
+
+/* =====================================================
+   SEARCH TASKS
+===================================================== */
+
+function searchTasks(value){
+
+    let tasks =
+        document.querySelectorAll(".task");
+
+
+    value =
+        value.toLowerCase();
+
+
+    tasks.forEach(function(task){
+
+        let text =
+            task.innerText.toLowerCase();
+
+
+        if(
+            text.includes(value)
+        ){
+
+            task.style.display="block";
+
+        }
+        else{
+
+            task.style.display="none";
+
+        }
+
+    });
+
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+function logoutUser(){
+
+    document.getElementById("app").style.display="none";
+
+    document.getElementById("loginPage").style.display="flex";
+
+
+    document.getElementById("loginUsername").value="";
+
+    document.getElementById("loginPassword").value="";
+
+
+    alert(
+        "You have been logged out successfully!"
+    );
+
+}
+
+
+/* =====================================================
+   DEFAULT
+===================================================== */
+
+window.onload = function(){
+
+    showRegister();
+
+};
+
+</script>
+
+</body>
+
+</html>
